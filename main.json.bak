@@ -1,0 +1,144 @@
+{
+  "navigation": [
+    {
+      "type": "home",
+      "id": "0",
+      "name": "HOME"
+    },
+    {
+      "type": "section",
+      "id": "14",
+      "name": "LOVE"
+    },
+    {
+      "type": "section",
+      "id": "17",
+      "name": "ENTERTAINMENT"
+    },
+    {
+      "type": "subsection",
+      "id": "1",
+      "name": "BEAUTY"
+    },
+    {
+      "type": "subsection",
+      "id": "5",
+      "name": "MAKEUP"
+    },
+    {
+      "type": "subsection",
+      "id": "3",
+      "name": "HAIR"
+    },
+    {
+      "type": "subsection",
+      "id": "2",
+      "name": "FASHION"
+    },
+    {
+      "type": "section",
+      "id": "18",
+      "name": "TRENDS"
+    },
+    {
+      "type": "collection",
+      "id": "75",
+      "name": "COVERGIRL"
+    },
+    {
+      "type": "subsection",
+      "id": "20",
+      "name": "HOROSCOPE"
+    },
+    {
+      "type": "ranking",
+      "id": "0",
+      "name": "RANKING"
+    }
+  ],
+  "matome": [
+    {
+      "type": "section",
+      "id": "14",
+      "name": "LOVE",
+      "image": ""
+    },
+    {
+      "type": "subsection",
+      "id": "3",
+      "name": "ネイル",
+      "image": ""
+    },
+    {
+      "type": "collection",
+      "id": "9",
+      "name": "桜",
+      "image": "https://cjp--h-cdn--co.global.ssl.fastly.net/assets/16/09/980x737/gallery-1456876491-04.jpg"
+    },
+    {
+      "type": "tag",
+      "id": "2",
+      "name": "ヴィクトリアズシークレット"
+    },
+    {
+      "type": "author",
+      "id": "14916",
+      "name": "望月望美",
+      "image": ""
+    },
+    {
+      "type": "author",
+      "id": "63",
+      "name": "石坂",
+      "image": ""
+    }
+  ],
+  "tieup": [
+    {
+      "type": "article",
+      "id": "5668",
+      "feed_title": "知らなかった！ あの名品スクラブでモテBODYが手に入る♡",
+      "title": "スクラブで作る！ 思わず触れたくなるモテBODY♡",
+      "feed_lead": "ハリがあり、丸みもある。そんな、肌見せしたくなる憧れボディラインが作れちゃう！",
+      "lead": "スクラブ指名買いで人気を誇るサボンの「ボディスクラブ」。実は、つるすべ肌だけでなく、ハリのある\"モテBODY\"を作る神アイテムだった！",
+      "image": "https://cjp--h-cdn--co.global.ssl.fastly.net/assets/17/27/980x490/landscape-1499318835-collagetop.jpg",
+      "pubdate": "1499302842",
+      "enddate": "1501983042"
+    },
+    {
+      "type": "gallery",
+      "id": "777",
+      "feed_title": "【ボーナス投資】キャリア女子が溺愛する凄腕スキンケア",
+      "title": "ボーナスで買いたい！キャリア女子が愛する夏のスキンケア",
+      "feed_lead": "仕事も美しさも常にトップクラスのキャリア女子たちが愛する「ドゥ･ラ･メール」のスキンケア。高価だからこそ価値がある、その手応えを感じるなら今しかない♡",
+      "lead": "ボーナス直前の今！自分史上NO.1の肌を目指すなら、ドゥ･ラ･メールのスキンケアに投資して！\nText by：矢﨑 彩",
+      "image": "https://cjp--h-cdn--co.global.ssl.fastly.net/assets/17/24/980x490/landscape-1497585291-0609138431a.jpg",
+      "pubdate": "1497433715",
+      "enddate": "1501205400"
+    },
+    {
+      "type": "gallery",
+      "id": "793",
+      "feed_title": "ムダ毛との戦いは一生続く!?脱毛サロンの賢い選び方",
+      "title": "ムダ毛との戦いは一生続く!?脱毛サロンの賢い選び方",
+      "feed_lead": "コスモガールのティガラが体験♡一生、360度どこから見られても恥ずかしくない、パーフェクトBODYを目指すなら。",
+      "lead": "どうやら脱毛サロンだとムダ毛との戦いってエンドレスなのだとか…。そこで、「永久メンテナンス保証」があるサロンを、コスモガールのティガラが体験レポート！",
+      "image": "https://cjp--h-cdn--co.global.ssl.fastly.net/assets/17/25/980x490/landscape-1497865733-c3-043c.jpg",
+      "pubdate": "1497433715",
+      "enddate": "1501380000"
+    }
+  ],
+  "mustread": [
+    {
+      "type": "gallery",
+      "id": "813",
+      "feed_title": "心に響くクラシック女優7人の言葉",
+      "title": "悩んでいる女性へ贈りたい　往年のハリウッド女優の美しい言葉",
+      "feed_lead": "オードリー・ヘプバーンに、グレース・ケリー…。力強く生きた女優たちが残した名言とは。",
+      "lead": "オードリー・ヘプバーンに、グレース・ケリー…。力強く生きた女優たちが残した名言とは。",
+      "image": "https://cjp--h-cdn--co.global.ssl.fastly.net/assets/17/28/320x320/square-1498467445-collage.jpg",
+      "pubdate": "1498615200"
+    }
+  ],
+  "information": {}
+}

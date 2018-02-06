@@ -44,10 +44,8 @@ if($json = $cache->get($CACHE_ID)){
 
 }else{
 
-    $RANKING = '';
     if( $TYPE == 'ranking' ){
         include('ranking.php');
-        $json = print_r($data);
     } else if ($TYPE == 'home') {
         include('home.php');
     } else if ($TYPE == 'top5') {

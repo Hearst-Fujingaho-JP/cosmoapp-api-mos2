@@ -53,7 +53,10 @@ $data = $service->data_ga->get(
                                               )
                                          );
 
-$ranking = array();
+$ranking_legacy = array();
+$ranking_display = array();
+// TODO:for testing:
+$ranking_display[] = "16022087";
 foreach($data['rows'] as $item){
 
     if( $item[0] == '/' ){
@@ -72,18 +75,72 @@ foreach($data['rows'] as $item){
     $tmp = explode($matches[1],$matches[0]);
     $id = $tmp[1];
 
-    $type = 'article';
-    if($matches[1] == 'g'){
-        $type = 'gallery';
+    if (strlen($id) > 4) {
+        // mos2: display_id
+        $ranking_display[] = $id;
+    } else {
+        // rams: legacy_id
+        $legacy_id = $id;
+        if ($matches[1] == 'g') {
+            $legacy_id = "-".$legacy_id;
+        }
+        $ranking_legacy[] = $legacy_id;
     }
 
-    $ranking[] = "{$type}.{$id}";
-    if( count($ranking) >= 15 ){
+    if( count($ranking_legacy) + count($ranking_display) >= 15 ){
         break;
     }
-
 }
 
-$RANKING = '&ranking=' .implode( ',', $ranking );
+header("Content-Type: application/json; charset=utf-8");
+
+require_once("rover/RoverCurlClient.php");
+require_once("itemTransformer.php");
+
+use  Service\Rover\RoverCurlClient;
+
+$client_legacy = new RoverCurlClient();
+$client_legacy->setParam("legacy_id:in", implode(",", $ranking_legacy));
+$client_legacy->setParam("page_size", "");
+$ret_legacy = $client_legacy->getContents();
+
+$client_display = new RoverCurlClient();
+$client_display->setParam("display_id:in", implode(",", $ranking_display));
+$client_display->setParam("page_size", "");
+$ret_display = $client_display->getContents();
+
+$client = new RoverCurlClient();
+
+$data_new = array_merge($ret_legacy->data, $ret_display->data);
+
+$ret = (object)array("data" => $data_new);
+
+$result = Array(
+    "type" => "ranking",
+    "id" => "0",
+    "name" => "RANKING",
+    "total" => (int)$ret_display->meta->result_count + (int)$ret_legacy->meta->result_count,
+    "author" => new stdClass(),
+    "url" => "http://www.cosmopolitan.com/jp"
+);
+
+if (isset($ret->data)) {
+    $new_items = Array();
+    foreach($ret->data as $item) {
+        $authors_new = Array();
+        foreach($item->authors as $author) {
+            $authors_ret = $client->getAuthor($author->id);
+            $authors_new[] = $authors_ret->data;
+        }
+        $trans = new ItemTransformer($item, $authors_new);
+        $new_item = $trans->go();
+        $new_items[] = $new_item;
+    }
+
+    $result["items"] = $new_items;
+}
+
+$json = json_encode($result);
+
 
 ?>

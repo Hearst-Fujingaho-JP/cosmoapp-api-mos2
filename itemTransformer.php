@@ -17,7 +17,7 @@ class ItemTransformer {
     public function go() {
         $item_rover = $this->item_rover;
         $new_item = Array();
-        $new_item["id"] = $item_rover->id;
+        $new_item["id"] = $item_rover->display_id;
 
         $display_type = $item_rover->display_type->title;
         if ($display_type == "Standard Article" or $display_type == "Long Form Article") {

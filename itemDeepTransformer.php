@@ -99,13 +99,13 @@ class ItemDeepTransformer extends ItemTransformer{
             }
         }
                
-        // $embera = new \Embera\Embera();
-        // $body = $embera->autoEmbed($body);
+        $embera = new \Embera\Embera();
+        $body = $embera->autoEmbed($body);
 
-        // $pattern_script = "<script async defer src=\"//www.instagram.com/embed.js\"></script>";
-        // if (strpos($body, $pattern_script) >= 0) {
-        //     $body = str_replace($pattern_script, "", $body) . $pattern_script;
-        // }
+        $pattern_script = "<script async defer src=\"//www.instagram.com/embed.js\"></script>";
+        if (strpos($body, $pattern_script) >= 0) {
+            $body = str_replace($pattern_script, "", $body) . $pattern_script;
+        }
 
         $pq_pattern = "|\[pullquote[^\]]+\](.*)\[/pullquote\]|U";
         preg_match_all($pq_pattern, $body, $match, PREG_SET_ORDER);

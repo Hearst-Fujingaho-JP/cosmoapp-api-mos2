@@ -74,7 +74,8 @@ class CurlClient {
 
         $ret = json_decode($result);
         if (property_exists($ret, "errors")) {
-            trigger_error($result, E_USER_ERROR);
+            //trigger_error($result, E_USER_ERROR);
+            return null;
         }
         return $ret; 
     }  

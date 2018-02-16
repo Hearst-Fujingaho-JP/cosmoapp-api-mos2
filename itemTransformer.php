@@ -32,14 +32,18 @@ class ItemTransformer {
         $new_item["lead"] = $item_rover->metadata->dek;
         $new_item["feed_lead"] = $item_rover->metadata->social_dek;
 
-        if (isset($this->authors_rover) && count($this->authors_rover) > 0) {
+        if (isset($this->authors_rover) && count($this->authors_rover) > 0 && $this->authors_rover[0] != null) {
+            $new_item["author_id"] = $this->authors_rover[0]->profile->id;
             $new_item["author"] = $this->authors_rover[0]->profile->display_name;
+        } else {
+            $new_item["author_id"] = 0;
+            $new_item["author"] = "";
         }
 
         $indexImage = $this->getFirstImageByRole($item_rover, ItemTransformer::MEDIA_ROLE_INDEX);
         if ($indexImage != null) {
             $indexImageUrl = $indexImage->media_object->hips_url;
-            $new_item["image"] = $indexImageUrl;
+            $new_item["image"] = $indexImageUrl."?resize=640:*&crop=640:320";
         } else {
             $new_item["image"] = "";
         }

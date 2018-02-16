@@ -6,14 +6,17 @@ require_once("itemTransformer.php");
 
 use  Service\Rover\RoverCurlClient;
 
-$client = new RoverCurlClient();
+$client_collection = new RoverCurlClient();
+$ret_collection = $client_collection->getCollection($ID);
 
+$client = new RoverCurlClient();
+$client->setParam("collections.id", $ID);
 $ret = $client->getContents();
 
 $result = Array(
-    "type" => "home",
-    "id" => "0",
-    "name" => "HOME",
+    "type" => "collection",
+    "id" => $ID,
+    "name" => isset($ret_collection->data) ? $ret_collection->data->title : null,
     "total" => $ret->meta->total_count,
     "author" => new stdClass(),
     "url" => "http://www.cosmopolitan.com/jp"
@@ -37,7 +40,7 @@ if (isset($ret->data)) {
 
 $json = json_encode($result);
 
-// $cache->save($json, $CACHE_ID);
+//$cache->save($json, $CACHE_ID);
 
 //echo $json;
 

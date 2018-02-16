@@ -27,7 +27,6 @@ class RoverCurlClient {
             10,
             "361277",
             "326d6cffc3641b735c9064bb77295938");
-
             return $curlClient->get($accessUrl, $this->params);
     }
 
@@ -111,7 +110,7 @@ class RoverCurlClient {
         return $this;
     }
 
-    function setPageSize($size) {
+    public function setPageSize($size) {
         $this->page_size = $size;
         return $this;
     }
@@ -176,6 +175,24 @@ class RoverCurlClient {
         return $this->get();
     }   
 
+    function getCollection($collectionId) {
+        $this->resetParams();
+
+        $url = "collections/".$collectionId;
+        $this->setResource($url);
+
+        return $this->get();
+    }   
+
+    function getSection($sectionId) {
+        $this->resetParams();
+
+        $url = "sections/".$sectionId;
+        $this->setResource($url);
+
+        return $this->get();
+    }   
+
     function getAuthor($authorId) {
         $this->resetParams();
 
@@ -183,7 +200,16 @@ class RoverCurlClient {
         $this->setResource($url);
 
         return $this->get();
-    }   
+    } 
+    
+    function getEntityById($entityName, $id) {
+        $this->resetParams();
+
+        $url = $entityName."/".$id;
+        $this->setResource($url);
+
+        return $this->get();
+    }
     
 
     function getSectionBySlug($slug) {

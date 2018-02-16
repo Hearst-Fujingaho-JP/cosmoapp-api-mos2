@@ -1,8 +1,14 @@
 <?php
 header("Content-Type: application/json; charset=utf-8");
 
+require_once("rover/RoverCurlClient.php");
+
+use  Service\Rover\RoverCurlClient;
+
 $TYPE = $_GET{'type'};
 $ID = $_GET{'id'};
+// $TYPE = "home";
+// $ID = 0;
 
 $lifetime = 3600;
 if( $TYPE == 'article' || $TYPE == 'gallery' ){
@@ -20,12 +26,6 @@ $options = array(
                   );
 $cache = new Cache_Lite($options);
 
-
-if( $TYPE == 'article' || $TYPE == 'gallery' ){
-    include('getItem.php');
-    exit;
-}
-
 $N = 0;
 if(isset($_GET{'n'})){
     $NUM = "&n={$_GET{'n'}}";
@@ -36,29 +36,26 @@ $CACHE_ID = $TYPE.'-'.$ID.'-'.$N;
 
 if($json = $cache->get($CACHE_ID)){
 
-}else{
-
-    $RANKING = '';
-    if( $TYPE == 'ranking' ){
+} else {
+    if( $TYPE == 'article' || $TYPE == 'gallery' ){
+        include('getItem.php');
+    } else  if( $TYPE == 'ranking' ){
         include('ranking.php');
+    } else if ($TYPE == 'home') {
+        include('home.php');
+    } else if ($TYPE == 'top5') {
+        include("top5.php");
+    } else if ($TYPE == 'section') {
+        include("section.php");
+    } else if ($TYPE == 'collection') {
+        include("collection.php"); 
+    } else if ($TYPE == 'subsection') {
+        include("subsection.php");
+    } else if ($TYPE == 'author') {
+        include("author.php");
     }
 
-
-    $URL = "http://www.cosmopolitan-jp.com/api/json/all.xml?type={$TYPE}&id={$ID}{$NUM}{$RANKING}&dynamic";
-    //$USERNAME = "stagingarea";
-    //$PASSWORD = "hearst57";
- 
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $URL);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    //curl_setopt($ch, CURLOPT_USERPWD, $USERNAME . ":" . $PASSWORD);
-    curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
-    $json = curl_exec($ch);
-
-    curl_close($ch);
-
     $cache->save($json, $CACHE_ID);
-
 }
 
 echo $json;

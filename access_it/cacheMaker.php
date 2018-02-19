@@ -1,14 +1,14 @@
 <?php
-require_once("../rover/CurlClient.php");
+require_once(__DIR__."/../rover/CurlClient.php");
 
 use  Service\Rover\CurlClient;
 
 $maker = new CacheMaker();
 $start = date_format(new Datetime(), 'Y-m-d H:i:s');
-echo "start : {$start}";
+echo "start : {$start}".PHP_EOL;
 $maker->doWork();
 $end = date_format(new Datetime(), 'Y-m-d H:i:s');
-echo "finished : {$end}";
+echo "finished : {$end}".PHP_EOL;;
 
 class CacheMaker {
     private $host = "http://sp.cosmopolitan-jp.com";

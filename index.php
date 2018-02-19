@@ -10,11 +10,16 @@ $ID = $_GET{'id'};
 // $TYPE = "home";
 // $ID = 0;
 
-$lifetime = 3600;
+// 基本的に、別途のシェルでcacheを作成させます
+$lifetime = 10800;
 if( $TYPE == 'article' || $TYPE == 'gallery' ){
 	$lifetime = 604800;
+} else {
+    if (isset($_GET{'NOTREADCACHE'}) 
+        and (strtoupper($_GET{'NOTREADCACHE'}) == "Y" or strtoupper($_GET{'NOTREADCACHE'}) == "yes")) {
+        $lifetime = 0;
+    }
 }
-
 
 require_once("../Cache_Lite-1.8.0/Cache/Lite.php");
 $options = array(
@@ -55,7 +60,12 @@ if($json = $cache->get($CACHE_ID)){
         include("author.php");
     }
 
-    $cache->save($json, $CACHE_ID);
+    if (isset($_GET{'NOTUPDATECACHE'})  
+        and (strtoupper($_GET{'NOTUPDATECACHE'}) == "Y" or strtoupper($_GET{'NOTUPDATECACHE'}) == "yes")) {
+            // do nothing 
+    } else {
+        $cache->save($json, $CACHE_ID);
+    };
 }
 
 echo $json;

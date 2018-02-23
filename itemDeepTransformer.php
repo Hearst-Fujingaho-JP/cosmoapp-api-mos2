@@ -74,6 +74,9 @@ class ItemDeepTransformer extends ItemTransformer{
         }
         
         $body = str_replace("<p>", '<p class="body-el-text standard-body-el-text">', $body);
+        $body = str_replace('<p class="', '<p class="body-el-text standard-body-el-text ', $body);
+        $body = str_replace('<h3>', '<h3 class="body-el-text standard-body-el-text">', $body);
+        $body = str_replace('<h3 class="', '<h3 class="body-el-text standard-body-el-text ', $body);
 
         $body = $this->replaceSNSEmbeds($body);
         $body = $this->replaceImages($item_rover, $body);

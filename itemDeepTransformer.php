@@ -72,6 +72,8 @@ class ItemDeepTransformer extends ItemTransformer{
         foreach($match[0] as $k => $item){
             $body = mb_ereg_replace( $item, '', $body);
         }
+        
+        $body = str_replace("<p>", '<p class="body-el-text standard-body-el-text">', $body);
 
         $body = $this->replaceSNSEmbeds($body);
         $body = $this->replaceImages($item_rover, $body);
@@ -83,24 +85,47 @@ class ItemDeepTransformer extends ItemTransformer{
         return $body;        
     }
 
-    protected function replaceSNSEmbeds($body) {
-        $patterns = array(
-            "|\[facebook[^\]]+\](.*)\[/facebook\]|U",
-            "|\[twitter[^\]]+\](.*)\[/twitter\]|U",
-            "|\[instagram[^\]]+\](.*)\[/instagram\]|U",
-            "|\[youtube[^\]]+\](.*)\[/youtube\]|U",
-            "|\[pinterest[^\]]+\](.*)\[/pinterest\]|U",
-        );
-        foreach($patterns as $pattern) {
-            preg_match_all($pattern, $body, $match, PREG_SET_ORDER);
-            foreach ($match as $k => $item) {
-                $sns_url = $item[1];
-                $body = str_replace($item[0], $sns_url, $body);
+    protected function replaceOneSNS($pattern, $body, $prefix, $suffix, $embera) {
+        preg_match_all($pattern, $body, $match, PREG_SET_ORDER);
+        foreach ($match as $k => $item) {
+            $sns_url = $item[1];
+            $info = $embera->autoEmbed($sns_url);
+            if ($info != $sns_url) {
+                $body = str_replace($item[0], $prefix . $info . $suffix, $body);
+            } else {
+                $body = str_replace($item[0], "", $body);
             }
         }
-               
+        return $body;
+    }
+
+    protected function replaceSNSEmbeds($body) {
         $embera = new \Embera\Embera();
-        $body = $embera->autoEmbed($body);
+
+        $pattern = "|<p>\[facebook[^\]]+\](.*)\[/facebook\]</p>|U";
+        $prefix = '<div class="embed embed--center embed--facebook"><div class="embed--inner">';
+        $suffix = '</div></div>';
+        $body = $this->replaceOneSNS($pattern, $body, $prefix, $suffix, $embera);
+
+        $pattern = "|<p>\[twitter[^\]]+\](.*)\[/twitter\]</p>|U";
+        $prefix = '<div class="embed embed--center embed--twitter"><div class="embed--inner">';
+        $suffix = '</div></div>';
+        $body = $this->replaceOneSNS($pattern, $body, $prefix, $suffix, $embera);
+
+        $pattern = "|<p>\[instagram[^\]]+\](.*)\[/instagram\]</p>|U";
+        $prefix = '<div class="embed embed--center embed--instagram"><div class="embed--inner">';
+        $suffix = '</div></div>';
+        $body = $this->replaceOneSNS($pattern, $body, $prefix, $suffix, $embera);
+
+        $pattern = "|<p>\[youtube[^\]]+\](.*)\[/youtube\]</p>|U";
+        $prefix = '<div class="embed embed--center embed--youtube"><div class="embed--inner">';
+        $suffix = '</div></div>';
+        $body = $this->replaceOneSNS($pattern, $body, $prefix, $suffix, $embera);
+
+        $pattern = "|<p>\[pinterest[^\]]+\](.*)\[/pinterest\]</p>|U";
+        $prefix = '<div class="embed embed--center embed--pinterest"><div class="embed--inner">';
+        $suffix = '</div></div>';
+        $body = $this->replaceOneSNS($pattern, $body, $prefix, $suffix, $embera);
 
         $pattern_script = "<script async defer src=\"//www.instagram.com/embed.js\"></script>";
         if (strpos($body, $pattern_script) >= 0) {

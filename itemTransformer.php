@@ -17,7 +17,7 @@ class ItemTransformer {
     public function go() {
         $item_rover = $this->item_rover;
         $new_item = Array();
-        $new_item["id"] = $item_rover->display_id;
+        $new_item["id"] = (string)$item_rover->display_id;
 
         $display_type = $item_rover->display_type->title;
         if ($display_type == "Standard Article" or $display_type == "Long Form Article") {
@@ -48,10 +48,10 @@ class ItemTransformer {
             $new_item["image"] = "";
         }
 
-        $ts = new DateTime($item_rover->created_at, new DateTimeZone("UTC"));
+        $ts = new DateTime($item_rover->display_date, new DateTimeZone("UTC"));
         $ts->setTimezone(new DateTimeZone('Asia/Tokyo'));
         $pubdate = $ts->getTimestamp();
-        $new_item["pubdate"] = $pubdate;
+        $new_item["pubdate"] = (string)$pubdate;
         
         return $new_item;
     }

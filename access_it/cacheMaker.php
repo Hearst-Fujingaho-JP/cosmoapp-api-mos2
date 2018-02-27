@@ -1,4 +1,8 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 require_once(__DIR__."/../rover/CurlClient.php");
 
 use  Service\Rover\CurlClient;
@@ -11,11 +15,11 @@ $end = date_format(new Datetime(), 'Y-m-d H:i:s');
 echo "finished : {$end}".PHP_EOL;;
 
 class CacheMaker {
-    private $host = "http://sp.cosmopolitan-jp.com";
-    private $base_url = "/api/json/mos2/";
+    private $host = "https://sp.cosmopolitan-jp.com";
+    private $base_url = "/api/json/prod/";
 
     public function doWork() {
-        $curlClient = new CurlClient($this->host, 20 , "" , "");
+        $curlClient = new CurlClient($this->host, 30 , "" , "");
         
         $ret = $curlClient->simpleGet($this->base_url."main.json", array());
         $json = $ret;
@@ -36,9 +40,9 @@ class CacheMaker {
                     $n = 10;
                 }
                 // first time : depth first to update all content cache
-                $this->accessOneSet($type, $id, $n, false, true);
+                $this->accessOneSet($type, $id, $n, true, true);
                 // second time : update cache for this set
-                $this->accessOneSet($type, $id, $n, true, false);
+                // $this->accessOneSet($type, $id, $n, true, false);
             } else {
                 $this->accessOneContent($type, $id);
             }
@@ -58,20 +62,20 @@ class CacheMaker {
         $ret_one = $curlClient->simpleGet($this->base_url, $params);
         if ($ret_one != null && isset($ret_one) && $ret_one->type == $type) {
             echo "access ok: {$type} : {$id} : updateCache={$updateCache} : accessChildren={$accessChildren}". PHP_EOL;
+            if ($accessChildren) {
+                $this->accessContents($ret_one->items);
+            }    
         } else {
             echo "access failed: {$type} : {$id} : updateCache={$updateCache} : accessChildren={$accessChildren}". PHP_EOL;
         }
 
-        if ($accessChildren) {
-            $this->accessContents($ret_one->items);
-            //$this->accessOneContent()
-            // foreach($ret_one->items as $item) {
-            //     // $this->accessOneContent($item->type, $item->id);
-            // }
-        }
     }
 
-    protected function accessContents($items) {
+    protected function accessContents($items, $stopOnRelated=false) {
+        if (!isset($items) || !is_array($items)) {
+            print_r($items);
+            return;
+        }
         $urlsWithOptions = Array();
         foreach($items as $item) {
             $type  = $item->type;
@@ -90,11 +94,23 @@ class CacheMaker {
         }
         $curlClient = new CurlClient($this->host, 50 , "" , "");
         $rets = $curlClient->multi_curl_execute($urlsWithOptions);
-        foreach($rets as $ret) {
-            if ($ret) {
-                echo "   content access ok: {$ret->type} : {$ret->id}". PHP_EOL;
-            }
-        }        
+        if (!$rets) {
+            echo "   content access error: {$urlsWithOptions}". PHP_EOL;
+        } else {
+            foreach($rets as $ret) {
+                if ($ret) {
+                    echo "   content access ok: {$ret->type} : {$ret->id} : related-{$stopOnRelated}.". PHP_EOL;
+                    if (!$stopOnRelated) {
+                        echo "Now accessing related". PHP_EOL;
+                        $this->accessContents($ret->related, true);
+                    }
+                } else {
+                    echo "   content access error";
+                    print_r($ret);
+                    echo PHP_EOL;
+                }
+            }        
+        }
     }
 
     protected function accessOneContent($type, $id) {
@@ -110,9 +126,11 @@ class CacheMaker {
         $ret_one = $curlClient->simpleGet($this->base_url, $params);
         if ($ret_one != null && isset($ret_one) && $ret_one->type == $type) {
             echo "   content access ok: {$type} : {$id}". PHP_EOL;
+            $this->accessContents($ret_one->related);
         } else {
             echo "   content access failed: {$type} : {$id}". PHP_EOL;
         }
     }
+    
 }
 ?>

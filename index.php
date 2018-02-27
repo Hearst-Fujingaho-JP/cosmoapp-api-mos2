@@ -7,19 +7,17 @@ use  Service\Rover\RoverCurlClient;
 
 $TYPE = $_GET{'type'};
 $ID = $_GET{'id'};
-// $TYPE = "home";
-// $ID = 0;
+$N = 0;
+if(isset($_GET{'n'})){
+    $NUM = "&n={$_GET{'n'}}";
+    $N = $_GET{'n'};
+}
 
 // 基本的に、別途のシェルでcacheを作成させます
 $lifetime = 10800;
 if( $TYPE == 'article' || $TYPE == 'gallery' ){
 	$lifetime = 604800;
-} else {
-    if (isset($_GET{'NOTREADCACHE'}) 
-        and (strtoupper($_GET{'NOTREADCACHE'}) == "Y" or strtoupper($_GET{'NOTREADCACHE'}) == "yes")) {
-        $lifetime = 0;
-    }
-}
+}   
 
 require_once("../Cache_Lite-1.8.0/Cache/Lite.php");
 $options = array(
@@ -31,13 +29,15 @@ $options = array(
                   );
 $cache = new Cache_Lite($options);
 
-$N = 0;
-if(isset($_GET{'n'})){
-    $NUM = "&n={$_GET{'n'}}";
-    $N = $_GET{'n'};
+$CACHE_ID = $TYPE.'-'.$ID.'-'.$N;
+
+// do not read from cache
+if (isset($_GET{'NOTREADCACHE'}) 
+        and (strtoupper($_GET{'NOTREADCACHE'}) == "Y" or strtoupper($_GET{'NOTREADCACHE'}) == "yes")) {
+    //$lifetime = 0;
+    $cache->remove($CACHE_ID);
 }
 
-$CACHE_ID = $TYPE.'-'.$ID.'-'.$N;
 
 if($json = $cache->get($CACHE_ID)){
 
@@ -64,6 +64,7 @@ if($json = $cache->get($CACHE_ID)){
         and (strtoupper($_GET{'NOTUPDATECACHE'}) == "Y" or strtoupper($_GET{'NOTUPDATECACHE'}) == "yes")) {
             // do nothing 
     } else {
+        $cache->remove($CACHE_ID);
         $cache->save($json, $CACHE_ID);
     };
 }

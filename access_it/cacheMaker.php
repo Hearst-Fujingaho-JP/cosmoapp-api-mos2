@@ -12,11 +12,12 @@ echo "finished : {$end}".PHP_EOL;;
 
 class CacheMaker {
     private $host = "http://sp.cosmopolitan-jp.com";
+    private $base_url = "/api/json/mos2/";
 
     public function doWork() {
         $curlClient = new CurlClient($this->host, 20 , "" , "");
         
-        $ret = $curlClient->simpleGet("/api/json/mos2/main.json", array());
+        $ret = $curlClient->simpleGet($this->base_url."main.json", array());
         $json = $ret;
         
         $this->accessMainItems($json);
@@ -30,26 +31,31 @@ class CacheMaker {
             $id = $nav->id;
 
             if ($type != "article" && $type != "gallery") {
+                $n = 30;
+                if ($type == "ranking") {
+                    $n = 10;
+                }
                 // first time : depth first to update all content cache
-                $this->accessOneSet($type, $id, false, true);
+                $this->accessOneSet($type, $id, $n, false, true);
                 // second time : update cache for this set
-                $this->accessOneSet($type, $id, true, false);
+                $this->accessOneSet($type, $id, $n, true, false);
             } else {
                 $this->accessOneContent($type, $id);
             }
         }
     }
 
-    protected function accessOneSet($type, $id, $updateCache, $accessChildren) {
+    protected function accessOneSet($type, $id, $n, $updateCache, $accessChildren) {
         $params = Array(
             "type" => $type,
             "id"=> $id,
+            "n" => $n,
             "NOTREADCACHE" => "Y",
             "NOTUPDATECACHE" => $updateCache ? "N" : "Y"
         );
         
         $curlClient = new CurlClient($this->host, 30 , "" , "");
-        $ret_one = $curlClient->simpleGet("/api/json/mos2/", $params);
+        $ret_one = $curlClient->simpleGet($this->base_url, $params);
         if ($ret_one != null && isset($ret_one) && $ret_one->type == $type) {
             echo "access ok: {$type} : {$id} : updateCache={$updateCache} : accessChildren={$accessChildren}". PHP_EOL;
         } else {
@@ -70,7 +76,7 @@ class CacheMaker {
         foreach($items as $item) {
             $type  = $item->type;
             $id = $item->id;
-            $url = "/api/json/mos2/";
+            $url = $this->base_url;
             $params = Array(
                 "type" => $type,
                 "id"=> $id,
@@ -101,7 +107,7 @@ class CacheMaker {
         );
 
         $curlClient = new CurlClient($this->host, 60 , "" , "");
-        $ret_one = $curlClient->simpleGet("/api/json/mos2/", $params);
+        $ret_one = $curlClient->simpleGet($this->base_url, $params);
         if ($ret_one != null && isset($ret_one) && $ret_one->type == $type) {
             echo "   content access ok: {$type} : {$id}". PHP_EOL;
         } else {

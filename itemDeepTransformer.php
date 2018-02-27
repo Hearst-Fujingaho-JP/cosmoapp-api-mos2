@@ -20,7 +20,7 @@ class ItemDeepTransformer extends ItemTransformer{
             $new_item["subsection_id"] = "";
             $new_item["subsection_name"] = "";
         }
-        $new_item["url"] = "http:".$item_rover->metadata->links->frontend->prod;
+        $new_item["url"] = "https:".$item_rover->metadata->links->frontend->prod;
         
         $new_item["feed_title"] = property_exists($item_rover->metadata, "short_title") ? $item_rover->metadata->short_title : $item_rover->title;
         $new_item["lead"]= property_exists($item_rover->metadata, "dek") ? $item_rover->metadata->dek : $item_rover->title;
@@ -212,7 +212,7 @@ class ItemDeepTransformer extends ItemTransformer{
 
     protected function getRelated($url) {
         $ch = curl_init();
-        $cxenseApiUrl = "http://api.cxense.com/public/widget/data?json={%22widgetId%22:%22866e94bd6764bec3d53e6d6185a60961de0108a2%22,%22context%22:{%22url%22:%22" . $url . "%22}}";
+        $cxenseApiUrl = "http://api.cxense.com/public/widget/data?json={%22widgetId%22:%2211ae96e78c9ea57a25adeee1f91e318af9f53903%22,%22context%22:{%22url%22:%22" . $url . "%22}}";
         curl_setopt($ch, CURLOPT_URL, $cxenseApiUrl);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
@@ -235,7 +235,7 @@ class ItemDeepTransformer extends ItemTransformer{
             if (strlen($id) > 4) {
                 $client->setParam("display_id", $id);
             } else  {
-                if ($TYPE == "article") {
+                if ($type == "article") {
                     $client->setParam("legacy_id", $id);
                 } else {
                     $client->setParam("legacy_id", "-".$id);
@@ -287,19 +287,23 @@ class ItemDeepTransformer extends ItemTransformer{
 
     protected function getSponsor() {
         $sponsor_rover = $this->item_rover->sponsor;
-        $sponsor = Array();
-        $sponsor["sponsor_type"] = $this->item_rover->metadata->sponsor->type;
-        $sponsor["sponsor_id"] = $sponsor_rover->id;
-        $sponsor["sponsor_name"] = $sponsor_rover->title;
-        $sponsor["sponsor_url"] = $sponsor_rover->url;
-
-        $client = new RoverCurlClient();
-        $ret = $client->getEntityById("images", $sponsor_rover->logo);
-        if (isset($ret->data)) {
-            $sponsor["sponsor_image"] = $ret->data->hips_url;            
+        if (isset($sponser_rover) && $sponser_rover != null) {
+            $sponsor = Array();
+            $sponsor["sponsor_type"] = $this->item_rover->metadata->sponsor->type;
+            $sponsor["sponsor_id"] = $sponsor_rover->id;
+            $sponsor["sponsor_name"] = $sponsor_rover->title;
+            $sponsor["sponsor_url"] = $sponsor_rover->url;
+    
+            $client = new RoverCurlClient();
+            $ret = $client->getEntityById("images", $sponsor_rover->logo);
+            if (isset($ret->data)) {
+                $sponsor["sponsor_image"] = $ret->data->hips_url;            
+            } else {
+                $sponsor["sponsor_image"] = "";            
+            }
         } else {
-            $sponsor["sponsor_image"] = "";            
-        }
+            $sponsor = (object)$sponsor;
+        } 
 
         return $sponsor;
     }

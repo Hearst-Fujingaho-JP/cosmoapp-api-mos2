@@ -33,7 +33,7 @@ $CACHE_ID = $TYPE.'-'.$ID.'-'.$N;
 
 // do not read from cache
 if (isset($_GET{'NOTREADCACHE'}) 
-        and (strtoupper($_GET{'NOTREADCACHE'}) == "Y" or strtoupper($_GET{'NOTREADCACHE'}) == "yes")) {
+        and (strtoupper($_GET{'NOTREADCACHE'}) == "Y" or strtoupper($_GET{'NOTREADCACHE'}) == "YES")) {
     //$lifetime = 0;
     $cache->remove($CACHE_ID);
 }

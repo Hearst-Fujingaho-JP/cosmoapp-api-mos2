@@ -130,6 +130,31 @@ class ItemDeepTransformer extends ItemTransformer{
         $suffix = '</div></div>';
         $body = $this->replaceOneSNS($pattern, $body, $prefix, $suffix, $embera);
 
+        $pattern = "|\[facebook[^\]]+\](.*)\[/facebook\]|U";
+        $prefix = '<div class="embed embed--center embed--facebook"><div class="embed--inner">';
+        $suffix = '</div></div>';
+        $body = $this->replaceOneSNS($pattern, $body, $prefix, $suffix, $embera);
+
+        $pattern = "|\[twitter[^\]]+\](.*)\[/twitter\]|U";
+        $prefix = '<div class="embed embed--center embed--twitter"><div class="embed--inner">';
+        $suffix = '</div></div>';
+        $body = $this->replaceOneSNS($pattern, $body, $prefix, $suffix, $embera);
+
+        $pattern = "|\[instagram[^\]]+\](.*)\[/instagram\]|U";
+        $prefix = '<div class="embed embed--center embed--instagram"><div class="embed--inner">';
+        $suffix = '</div></div>';
+        $body = $this->replaceOneSNS($pattern, $body, $prefix, $suffix, $embera);
+
+        $pattern = "|\[youtube[^\]]+\](.*)\[/youtube\]|U";
+        $prefix = '<div class="embed embed--center embed--youtube"><div class="embed--inner">';
+        $suffix = '</div></div>';
+        $body = $this->replaceOneSNS($pattern, $body, $prefix, $suffix, $embera);
+
+        $pattern = "|\[pinterest[^\]]+\](.*)\[/pinterest\]|U";
+        $prefix = '<div class="embed embed--center embed--pinterest"><div class="embed--inner">';
+        $suffix = '</div></div>';
+        $body = $this->replaceOneSNS($pattern, $body, $prefix, $suffix, $embera);
+        
         $pattern_script = "<script async defer src=\"//www.instagram.com/embed.js\"></script>";
         if (strpos($body, $pattern_script) >= 0) {
             $body = str_replace($pattern_script, "", $body) . $pattern_script;
@@ -274,7 +299,9 @@ class ItemDeepTransformer extends ItemTransformer{
                     $thumbnail = "http://{$thumbnail[2]}/{$thumbnail[3]}/{$thumbnail[4]}/{$thumbnail[5]}/320x160/{$file}";
                 }
             } else if (strpos($item['dominantimage'], "//hips.hearstapps.com"))  {
-                $thumbnail .= "?resize=320:*&crop=320:160";
+                if (!strpos($thumbnail, "?")) {
+                    $thumbnail .= "?resize=320:*&crop=320:160";
+                }
             }
         
             $thumbnail = $this->makeItSsl($thumbnail);
@@ -302,7 +329,7 @@ class ItemDeepTransformer extends ItemTransformer{
                 $sponsor["sponsor_image"] = "";            
             }
         } else {
-            $sponsor = (object)$sponsor;
+            $sponsor = new stdClass();
         } 
 
         return $sponsor;

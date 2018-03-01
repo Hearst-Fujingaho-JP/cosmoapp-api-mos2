@@ -8,6 +8,7 @@ use  Service\Rover\RoverCurlClient;
 
 $client = new RoverCurlClient();
 
+$client->setPageSize($N);
 $ret = $client->getContents();
 
 $result = Array(

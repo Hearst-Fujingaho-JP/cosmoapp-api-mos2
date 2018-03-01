@@ -17,6 +17,9 @@ echo "finished : {$end}".PHP_EOL;;
 class CacheMaker {
     private $host = "https://sp.cosmopolitan-jp.com";
     private $base_url = "/api/json/prod/";
+    private $curl_timeout_for_set = 60;
+    private $curl_timeout_for_multi_contents = 60;
+    private $curl_timeout_for_content = 30;
 
     public function doWork() {
         $curlClient = new CurlClient($this->host, 30 , "" , "");
@@ -35,7 +38,7 @@ class CacheMaker {
             $id = $nav->id;
 
             if ($type != "article" && $type != "gallery") {
-                $n = 30;
+                $n = 50;
                 if ($type == "ranking") {
                     $n = 10;
                 }
@@ -58,7 +61,7 @@ class CacheMaker {
             "NOTUPDATECACHE" => $updateCache ? "N" : "Y"
         );
         
-        $curlClient = new CurlClient($this->host, 30 , "" , "");
+        $curlClient = new CurlClient($this->host, $this->curl_timeout_for_set , "" , "");
         $ret_one = $curlClient->simpleGet($this->base_url, $params);
         if ($ret_one != null && isset($ret_one) && $ret_one->type == $type) {
             echo "access ok: {$type} : {$id} : updateCache={$updateCache} : accessChildren={$accessChildren}". PHP_EOL;
@@ -92,16 +95,16 @@ class CacheMaker {
                 1 => $params
             );
         }
-        $curlClient = new CurlClient($this->host, 50 , "" , "");
+        $curlClient = new CurlClient($this->host, $this->curl_timeout_for_multi_contents , "" , "");
         $rets = $curlClient->multi_curl_execute($urlsWithOptions);
         if (!$rets) {
             echo "   content access error: {$urlsWithOptions}". PHP_EOL;
         } else {
             foreach($rets as $ret) {
                 if ($ret) {
-                    echo "   content access ok: {$ret->type} : {$ret->id} : related-{$stopOnRelated}.". PHP_EOL;
+                    // echo "   content access ok: {$ret->type} : {$ret->id} : related-{$stopOnRelated}.". PHP_EOL;
                     if (!$stopOnRelated) {
-                        echo "Now accessing related". PHP_EOL;
+                        // echo "Now accessing related". PHP_EOL;
                         $this->accessContents($ret->related, true);
                     }
                 } else {
@@ -122,13 +125,13 @@ class CacheMaker {
             "NOTUPDATECACHE" => "N" // キャッシュうを必ず作成する
         );
 
-        $curlClient = new CurlClient($this->host, 60 , "" , "");
+        $curlClient = new CurlClient($this->host, $this->curl_timeout_for_content , "" , "");
         $ret_one = $curlClient->simpleGet($this->base_url, $params);
         if ($ret_one != null && isset($ret_one) && $ret_one->type == $type) {
-            echo "   content access ok: {$type} : {$id}". PHP_EOL;
+            // echo "   content access ok: {$type} : {$id}". PHP_EOL;
             $this->accessContents($ret_one->related);
         } else {
-            echo "   content access failed: {$type} : {$id}". PHP_EOL;
+            // echo "   content access failed: {$type} : {$id}". PHP_EOL;
         }
     }
     

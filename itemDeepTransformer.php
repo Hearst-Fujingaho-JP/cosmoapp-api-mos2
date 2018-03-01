@@ -235,6 +235,27 @@ class ItemDeepTransformer extends ItemTransformer{
         return null;                
     }
 
+    protected function checkExistsInRover($type, $id) {
+        $client = new RoverCurlClient();
+        if (strlen($id) > 4) {
+            $client->setParam("display_id", $id);
+        } else  {
+            if ($type == "article") {
+                $client->setParam("legacy_id", $id);
+            } else {
+                $client->setParam("legacy_id", "-".$id);
+            }
+        }
+        $client->setPageSize(1);
+        $ret = $client->getContents();
+        if ($ret->meta->result_count <= 0) {
+            return false;
+        }
+
+        return true;
+    
+    }
+
     protected function getRelated($url) {
         $ch = curl_init();
         $cxenseApiUrl = "http://api.cxense.com/public/widget/data?json={%22widgetId%22:%2211ae96e78c9ea57a25adeee1f91e318af9f53903%22,%22context%22:{%22url%22:%22" . $url . "%22}}";
@@ -255,23 +276,11 @@ class ItemDeepTransformer extends ItemTransformer{
             if($matches[1] == 'g'){
                 $type = 'gallery';
             }
-
-            $client = new RoverCurlClient();
-            if (strlen($id) > 4) {
-                $client->setParam("display_id", $id);
-            } else  {
-                if ($type == "article") {
-                    $client->setParam("legacy_id", $id);
-                } else {
-                    $client->setParam("legacy_id", "-".$id);
-                }
-            }
-            $client->setPageSize(1);
-            $ret = $client->getContents();
-            if ($ret->meta->result_count <= 0) {
-                continue;
-            }
-        
+            
+            // if (!$this->checkExistsInRover($type, $id)) {
+            //     continue;
+            // }
+            
             $thumbnail = $item['dominantimage'];
             if (strpos($item['dominantimage'], "//cjp.h-cdn.co")) {
                 $thumbnail = explode('/',$item['dominantimage']);

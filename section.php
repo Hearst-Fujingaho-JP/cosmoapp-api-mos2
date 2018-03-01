@@ -11,7 +11,7 @@ $client_section = new RoverCurlClient();
 $ret_section = $client_section->getSection($ID);
 
 $client = new RoverCurlClient();
-$client->setPageSize(30);
+$client->setPageSize($N);
 $client->setParam("section.id", $ID);
 $ret = $client->getContents();
 

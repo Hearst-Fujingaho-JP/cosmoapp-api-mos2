@@ -10,6 +10,7 @@ $client_collection = new RoverCurlClient();
 $ret_collection = $client_collection->getCollection($ID);
 
 $client = new RoverCurlClient();
+$client->setPageSize($N);
 $client->setParam("collections.id", $ID);
 $ret = $client->getContents();
 

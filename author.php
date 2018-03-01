@@ -10,7 +10,7 @@ $client_author = new RoverCurlClient();
 $ret_author = $client_author->getAuthor($ID);
 
 $client = new RoverCurlClient();
-$client->setPageSize(30);
+$client->setPageSize($N);
 $client->setParam("authors.id", $ID);
 $ret = $client->getContents();
 

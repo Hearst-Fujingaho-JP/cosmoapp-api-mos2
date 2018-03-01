@@ -5,6 +5,9 @@ error_reporting(E_ALL);
 
 header("Content-Type: application/json; charset=utf-8");
 
+
+$start = new Datetime();
+
 //require_once("rover/RoverCurlClient.php");
 
 //use  Service\Rover\RoverCurlClient;
@@ -24,6 +27,10 @@ $ID = "6960";
 include('getItem.php');
 // include("collection.php");
 // var_dump($new_item);
+
+$end = new Datetime();
+
+//echo $end->getTimestamp() - $start->getTimestamp();
 
 echo $json;
 ?>

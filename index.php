@@ -13,6 +13,11 @@ if(isset($_GET{'n'})){
     $N = $_GET{'n'};
 }
 
+if ($N == 0) {
+    // default 50
+    $N = 50;
+}
+
 // 基本的に、別途のシェルでcacheを作成させます
 $lifetime = 10800;
 if( $TYPE == 'article' || $TYPE == 'gallery' ){

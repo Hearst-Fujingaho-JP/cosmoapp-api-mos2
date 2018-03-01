@@ -30,12 +30,16 @@ $options = array(
 $cache = new Cache_Lite($options);
 
 $CACHE_ID = $TYPE.'-'.$ID.'-'.$N;
+$CACHE_ID_SIMPLE = $TYPE.'-'.$ID.'-0';
 
 // do not read from cache
 if (isset($_GET{'NOTREADCACHE'}) 
         and (strtoupper($_GET{'NOTREADCACHE'}) == "Y" or strtoupper($_GET{'NOTREADCACHE'}) == "YES")) {
     //$lifetime = 0;
     $cache->remove($CACHE_ID);
+    if ($N != 0) {
+        $cache->remove($CACHE_ID_SIMPLE);
+    }
 }
 
 
@@ -66,7 +70,11 @@ if($json = $cache->get($CACHE_ID)){
     } else {
         $cache->remove($CACHE_ID);
         $cache->save($json, $CACHE_ID);
-    };
+        if ($N != 0) {
+            $cache->remove($CACHE_ID_SIMPLE);
+            $cache->save($json, $CACHE_ID_SIMPLE);
+            }
+        };
 }
 
 echo $json;

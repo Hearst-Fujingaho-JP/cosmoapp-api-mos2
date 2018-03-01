@@ -36,7 +36,7 @@ class RoverCurlClient {
             "page" => $this->page,
             "page_size" =>$this->page_size,
             "count" => "yes",
-            "sort" => "-display_date",
+            "sort" => "-publish_from",
             "status" => "3"
         );
 

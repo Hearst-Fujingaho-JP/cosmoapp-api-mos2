@@ -28,15 +28,15 @@ class ItemTransformer {
             $new_item["type"] = "unknown";
         }
         $new_item["title"] = $item_rover->title;
-        $new_item["feed_title"] = $item_rover->metadata->index_title;
-        $new_item["lead"] = $item_rover->metadata->dek;
-        $new_item["feed_lead"] = $item_rover->metadata->social_dek;
+        $new_item["feed_title"] = isset($item_rover->metadata->index_title) ? $item_rover->metadata->index_title : "";
+        $new_item["lead"] = isset($item_rover->metadata->dek) ? $item_rover->metadata->dek : "";
+        $new_item["feed_lead"] = isset($item_rover->metadata->social_dek) ? $item_rover->metadata->social_dek : "";
 
         if (isset($this->authors_rover) && count($this->authors_rover) > 0 && $this->authors_rover[0] != null) {
             $new_item["author_id"] = $this->authors_rover[0]->id;
             $new_item["author"] = $this->authors_rover[0]->profile->display_name;
         } else {
-            $new_item["author_id"] = 0;
+            $new_item["author_id"] = "0";
             $new_item["author"] = "";
         }
 
@@ -48,7 +48,7 @@ class ItemTransformer {
             $new_item["image"] = "";
         }
 
-        $ts = new DateTime($item_rover->display_date, new DateTimeZone("UTC"));
+        $ts = new DateTime($item_rover->publish_from, new DateTimeZone("UTC"));
         $ts->setTimezone(new DateTimeZone('Asia/Tokyo'));
         $pubdate = $ts->getTimestamp();
         $new_item["pubdate"] = (string)$pubdate;

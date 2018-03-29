@@ -25,8 +25,8 @@ class RoverCurlClient {
         $curlClient = new CurlClient(   
             "https://prod-rover.mediaos.hearst.io",
             30,
-            "361277",
-            "326d6cffc3641b735c9064bb77295938");
+            "496967",
+            "248f780161454e4c06a799ea5814825f");
             return $curlClient->get($accessUrl, $this->params);
     }
 

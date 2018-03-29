@@ -20,10 +20,9 @@ class CurlClient {
         
         $sig = $this->makeSig( $key, $secret, $timestamp);
 		return array(
-			"User-Agent:"."spcosmo.test",
+			"User-Agent:"."spcosmo.japan.api",
 			"content-type:"."application/json",
 			"Authorization:"."Doorman-SHA256 Credential={$key}",
-			//"Authorization" => "Doorman-SHA1 Credential={$key}",
 			"Signature:".$sig,
 			"Timestamp:".$timestamp
 		);
